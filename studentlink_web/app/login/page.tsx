@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/components/auth-provider"
 import { LoginForm } from "@/components/login-form"
-import { LoadingScreen } from "@/components/loading-screen"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
@@ -33,12 +32,22 @@ export default function LoginPage() {
   }, [user, loading, router])
 
   if (loading) {
-    return <LoadingScreen />
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1E2A78] to-[#2480EA]">
+        <div className="text-center text-white">
+          <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4">
+            <span className="text-[#1E2A78] font-bold text-xl">SL</span>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">StudentLink Portal</h2>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   if (!user) {
     return <LoginForm />
   }
 
-  return <LoadingScreen />
+  return null
 }

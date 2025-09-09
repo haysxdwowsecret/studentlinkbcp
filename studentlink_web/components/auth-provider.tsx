@@ -19,31 +19,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check for existing authentication on app start
+    // Simple auth check without localStorage caching
     const checkAuth = async () => {
       try {
-        // First check localStorage for faster initial load
-        const storedUser = localStorage.getItem("studentlink_user")
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser)
-          setUser(parsedUser)
-          setLoading(false)
-          
-          // Then verify with backend in background
-          try {
-            const currentUser = await apiClient.getCurrentUser()
-            setUser(currentUser)
-            localStorage.setItem("studentlink_user", JSON.stringify(currentUser))
-          } catch (error) {
-            console.log("Backend verification failed, using cached user:", error)
-          }
-          return
-        }
-        
-        // If no stored user, try backend
         const currentUser = await apiClient.getCurrentUser()
         setUser(currentUser)
-        localStorage.setItem("studentlink_user", JSON.stringify(currentUser))
       } catch (error) {
         console.log("No valid session found:", error)
         setUser(null)
