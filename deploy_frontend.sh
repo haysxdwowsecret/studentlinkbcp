@@ -38,6 +38,10 @@ NEXT_PUBLIC_DEBUG_MODE=false
 NEXT_PUBLIC_ENABLE_MOCK_DATA=false
 EOF
 
+# Set environment variables for production
+echo "🔧 Setting up environment variables..."
+cp env.production .env.production
+
 # Build for production
 echo "🔨 Building for production..."
 npm run build

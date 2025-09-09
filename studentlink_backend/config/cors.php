@@ -19,7 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        'https://bcpstudentlink.online',
+        'https://www.bcpstudentlink.online',
+        'http://localhost:3000', // For development
+        'http://127.0.0.1:3000', // For development
+    ],
 
     'allowed_origins_patterns' => [],
 
