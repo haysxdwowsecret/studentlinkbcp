@@ -2,12 +2,23 @@
 
 import { useAuth } from "@/components/auth-provider"
 import { LoginForm } from "@/components/login-form"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
 export default function HomePage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // Clean URL parameters that might cause issues from copied links
+    if (searchParams.toString() && typeof window !== 'undefined') {
+      const cleanUrl = window.location.origin
+      if (window.location.href !== cleanUrl) {
+        window.history.replaceState({}, '', cleanUrl)
+      }
+    }
+  }, [searchParams])
 
   useEffect(() => {
     if (!loading && user) {
