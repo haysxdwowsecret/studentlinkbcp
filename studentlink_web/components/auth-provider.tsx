@@ -22,22 +22,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for existing authentication on app start
     const checkAuth = async () => {
       try {
-        // Try to get current user from backend
+        // First check localStorage for faster initial load
+        const storedUser = localStorage.getItem("studentlink_user")
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser)
+          setUser(parsedUser)
+          setLoading(false)
+          
+          // Then verify with backend in background
+          try {
+            const currentUser = await apiClient.getCurrentUser()
+            setUser(currentUser)
+            localStorage.setItem("studentlink_user", JSON.stringify(currentUser))
+          } catch (error) {
+            console.log("Backend verification failed, using cached user:", error)
+          }
+          return
+        }
+        
+        // If no stored user, try backend
         const currentUser = await apiClient.getCurrentUser()
         setUser(currentUser)
+        localStorage.setItem("studentlink_user", JSON.stringify(currentUser))
       } catch (error) {
         console.log("No valid session found:", error)
-        
-        // Fallback to localStorage for demo mode
-        try {
-          const storedUser = localStorage.getItem("studentlink_user")
-          if (storedUser) {
-            setUser(JSON.parse(storedUser))
-          }
-        } catch (parseError) {
-          console.log("Error loading stored user:", parseError)
-          localStorage.removeItem("studentlink_user")
-        }
+        setUser(null)
       } finally {
         setLoading(false)
       }

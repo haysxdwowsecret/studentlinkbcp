@@ -2,15 +2,9 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+  const { pathname } = request.nextUrl
   
-  // Clean query parameters from root and login paths
-  if ((pathname === '/' || pathname === '/login') && searchParams.toString()) {
-    const cleanUrl = new URL(pathname, request.url)
-    return NextResponse.redirect(cleanUrl)
-  }
-  
-  // Redirect root to /login
+  // Only redirect root to /login, let client handle the rest
   if (pathname === '/') {
     const loginUrl = new URL('/login', request.url)
     return NextResponse.redirect(loginUrl)
@@ -22,12 +16,8 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * Only match root path to avoid conflicts with client-side routing
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/',
   ],
 }
