@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
@@ -12,27 +11,21 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 
 export function LoginForm() {
-  const { login } = useAuth()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const { login, loading } = useAuth()
+  const [email, setEmail] = useState("admin@bestlink.edu.ph")
+  const [password, setPassword] = useState("admin123")
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
     try {
       await login(email, password)
     } catch (err) {
       setError("Invalid credentials. Please check your email and password.")
-    } finally {
-      setLoading(false)
     }
   }
-
-  // All authentication now handled by backend API
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1E2A78] to-[#2480EA] p-4">
@@ -83,8 +76,6 @@ export function LoginForm() {
             </form>
           </CardContent>
         </Card>
-
-        {/* Demo accounts removed - all authentication now handled by backend API */}
       </div>
     </div>
   )

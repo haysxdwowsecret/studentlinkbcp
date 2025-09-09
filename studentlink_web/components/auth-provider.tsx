@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, ReactNode } from "react"
 import { apiClient, User } from "../lib/api-client"
 
 interface AuthContextType {
@@ -12,52 +12,29 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// All authentication now handled by backend API
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Simple auth check without localStorage caching
-    const checkAuth = async () => {
-      try {
-        const currentUser = await apiClient.getCurrentUser()
-        setUser(currentUser)
-      } catch (error) {
-        console.log("No valid session found:", error)
-        setUser(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    checkAuth()
-  }, [])
+  const [loading, setLoading] = useState(false)
 
   const login = async (email: string, password: string) => {
+    setLoading(true)
     try {
-      // Authenticate with backend API
       const response = await apiClient.login(email, password)
       setUser(response.user)
-      localStorage.setItem("studentlink_user", JSON.stringify(response.user))
-      return
     } catch (error) {
-      console.error("Authentication failed:", error)
-      throw new Error("Invalid credentials. Please check your email and password.")
+      setUser(null)
+      throw error
+    } finally {
+      setLoading(false)
     }
   }
 
-  const logout = async () => {
-    try {
-      // Try to logout from backend
-      await apiClient.logout()
-    } catch (error) {
-      console.log("Backend logout failed:", error)
-    } finally {
-      // Always clear local state
-      setUser(null)
-      localStorage.removeItem("studentlink_user")
+  const logout = () => {
+    setUser(null)
+    // Clear all storage
+    if (typeof window !== 'undefined') {
+      localStorage.clear()
+      sessionStorage.clear()
     }
   }
 
