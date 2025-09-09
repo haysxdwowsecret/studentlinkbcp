@@ -1,68 +1,73 @@
-'use client'
+"use client"
 
-import { useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useAuth } from "@/components/auth-provider"
+import { LoginForm } from "@/components/login-form"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 
 export default function LoginPage() {
+  const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    // Handle all possible URL variations and redirects
-    const currentUrl = window.location.href
-    const currentPath = window.location.pathname
-    
-    // If we're on /login, redirect to main page
-    if (currentPath === '/login') {
-      // Clear any query parameters that might cause issues
-      const cleanUrl = window.location.origin
-      window.location.replace(cleanUrl)
-      return
+    // Clean URL parameters that might cause issues from copied links
+    if (searchParams.toString() && typeof window !== 'undefined') {
+      const cleanUrl = window.location.origin + '/login'
+      if (window.location.href !== cleanUrl) {
+        window.history.replaceState({}, '', cleanUrl)
+      }
     }
-    
-    // If we're on root but with query parameters, clean them
-    if (currentPath === '/' && searchParams.toString()) {
-      const cleanUrl = window.location.origin
-      window.location.replace(cleanUrl)
-      return
+  }, [searchParams])
+
+  useEffect(() => {
+    if (!loading && user) {
+      // Redirect to role-specific dashboard
+      switch (user.role) {
+        case "admin":
+          router.push("/admin")
+          break
+        case "department_head":
+          router.push("/department-head")
+          break
+        case "staff":
+          router.push("/staff")
+          break
+        case "faculty":
+          router.push("/faculty")
+          break
+        default:
+          router.push("/login")
+      }
     }
-    
-    // Default redirect to main page
-    router.replace('/')
-  }, [router, searchParams])
+  }, [user, loading, router])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1E2A78] to-[#2480EA]">
+        <div className="text-center text-white">
+          <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4">
+            <span className="text-[#1E2A78] font-bold text-xl">SL</span>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">StudentLink Portal</h2>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <LoginForm />
+  }
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh',
-      backgroundColor: '#1e2a78',
-      color: 'white',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{
-          width: '60px',
-          height: '60px',
-          backgroundColor: 'white',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 20px',
-          color: '#1e2a78',
-          fontSize: '24px',
-          fontWeight: 'bold'
-        }}>
-          SL
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1E2A78] to-[#2480EA]">
+      <div className="text-center text-white">
+        <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4">
+          <span className="text-[#1E2A78] font-bold text-xl">SL</span>
         </div>
-        <h2>StudentLink Portal</h2>
-        <p>Redirecting to login...</p>
-        <div style={{ marginTop: '20px', fontSize: '14px', opacity: 0.8 }}>
-          <p>If this page doesn't redirect automatically,</p>
-          <p>please go to: <strong>bcpstudentlink.online</strong></p>
-        </div>
+        <h2 className="text-2xl font-bold mb-2">StudentLink Portal</h2>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
       </div>
     </div>
   )

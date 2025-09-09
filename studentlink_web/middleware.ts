@@ -4,22 +4,16 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
   
-  // Handle /login route - redirect to main page
-  if (pathname === '/login') {
-    const cleanUrl = new URL('/', request.url)
+  // Clean query parameters from root and login paths
+  if ((pathname === '/' || pathname === '/login') && searchParams.toString()) {
+    const cleanUrl = new URL(pathname, request.url)
     return NextResponse.redirect(cleanUrl)
   }
   
-  // Handle root path with query parameters - clean them
-  if (pathname === '/' && searchParams.toString()) {
-    const cleanUrl = new URL('/', request.url)
-    return NextResponse.redirect(cleanUrl)
-  }
-  
-  // Handle any other problematic paths
-  if (pathname.includes('login') && pathname !== '/login') {
-    const cleanUrl = new URL('/', request.url)
-    return NextResponse.redirect(cleanUrl)
+  // Redirect root to /login
+  if (pathname === '/') {
+    const loginUrl = new URL('/login', request.url)
+    return NextResponse.redirect(loginUrl)
   }
   
   return NextResponse.next()
