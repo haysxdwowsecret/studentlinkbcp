@@ -1,0 +1,122 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    namespace "com.bestlink.studentlink"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.bestlink.studentlink"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+
+        // Environment variables for build variants
+        buildConfigField "String", "API_BASE_URL", "\"http://localhost:8000/api\""
+        buildConfigField "String", "OPENAI_API_KEY", "\"\""
+        buildConfigField "boolean", "ENABLE_AI_FEATURES", "true"
+        buildConfigField "boolean", "ENABLE_PUSH_NOTIFICATIONS", "true"
+        buildConfigField "boolean", "DEBUG_MODE", "false"
+
+        // Manifest placeholders
+        manifestPlaceholders = [
+            appName: "StudentLink",
+            appIcon: "@mipmap/ic_launcher",
+            applicationName: "io.flutter.app.FlutterApplication"
+        ]
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "API_BASE_URL", "\"http://10.0.2.2:8000/api\""
+            buildConfigField "boolean", "DEBUG_MODE", "true"
+            buildConfigField "String", "ENVIRONMENT", "\"development\""
+        }
+        
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+            
+            buildConfigField "String", "API_BASE_URL", "\"https://api.studentlink.bestlink.edu.ph/api\""
+            buildConfigField "boolean", "DEBUG_MODE", "false"
+            buildConfigField "String", "ENVIRONMENT", "\"production\""
+            
+            // Enable proguard for release builds
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libjsc.so'
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0"
+    
+    // Material Design Components
+    implementation 'com.google.android.material:material:1.11.0'
+    
+    // Firebase dependencies (if using FCM)
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+    
+    // Other dependencies
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
+
+// Apply Google Services plugin (if using Firebase)
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}

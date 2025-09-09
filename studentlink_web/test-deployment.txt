@@ -1,0 +1,14 @@
+StudentLink Web Portal - Deployment Test File
+=============================================
+
+This file was created to test file synchronization between local development and VPS deployment.
+
+Created: 2025-09-09
+Purpose: Verify that all files are properly copied to the VPS during deployment
+
+If you can see this file on the VPS, the file synchronization is working correctly.
+
+Next steps:
+1. Pull this file to the VPS
+2. Verify package.json and other files are present
+3. Continue with frontend deployment
