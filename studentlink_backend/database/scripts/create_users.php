@@ -67,7 +67,7 @@ try {
     $users = [
         [
             'employee_id' => 'ADMIN001',
-            'name' => 'Dr. Maria Santos',
+            'name' => 'Jay Literal',
             'email' => 'admin@bestlink.edu.ph',
             'password' => password_hash('admin123', PASSWORD_DEFAULT),
             'role' => 'admin',
@@ -76,7 +76,7 @@ try {
         ],
         [
             'employee_id' => 'DEPT001',
-            'name' => 'Prof. Juan Dela Cruz',
+            'name' => 'Jay Literal',
             'email' => 'depthead@bestlink.edu.ph',
             'password' => password_hash('dept123', PASSWORD_DEFAULT),
             'role' => 'department_head',
@@ -85,7 +85,7 @@ try {
         ],
         [
             'employee_id' => 'STAFF001',
-            'name' => 'Ms. Ana Rodriguez',
+            'name' => 'Jay Literal',
             'email' => 'staff@bestlink.edu.ph',
             'password' => password_hash('staff123', PASSWORD_DEFAULT),
             'role' => 'staff',
@@ -94,7 +94,7 @@ try {
         ],
         [
             'employee_id' => 'FAC001',
-            'name' => 'Prof. Roberto Garcia',
+            'name' => 'Jay Literal',
             'email' => 'faculty@bestlink.edu.ph',
             'password' => password_hash('faculty123', PASSWORD_DEFAULT),
             'role' => 'faculty',
@@ -103,7 +103,7 @@ try {
         ],
         [
             'student_id' => '2024-00001',
-            'name' => 'John Michael Smith',
+            'name' => 'Jay Literal',
             'email' => 'student@bestlink.edu.ph',
             'password' => password_hash('student123', PASSWORD_DEFAULT),
             'role' => 'student',
@@ -142,7 +142,7 @@ try {
     }
     
     echo "\n✅ All users created successfully!\n";
-    echo "\n📋 Login Credentials:\n";
+    echo "\n📋 Login Credentials (All users: Jay Literal):\n";
     echo "Admin: admin@bestlink.edu.ph / admin123\n";
     echo "Department Head: depthead@bestlink.edu.ph / dept123\n";
     echo "Staff: staff@bestlink.edu.ph / staff123\n";
