@@ -56,7 +56,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=studentlink_prod
 DB_USERNAME=studentlink_user
-DB_PASSWORD=StudentLink2024!
+DB_PASSWORD=hellnoway@2025
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=redis

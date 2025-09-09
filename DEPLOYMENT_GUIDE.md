@@ -63,7 +63,7 @@ mysql -u root -p
 ```sql
 -- In MySQL console
 CREATE DATABASE studentlink_prod;
-CREATE USER 'studentlink_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+CREATE USER 'studentlink_user'@'localhost' IDENTIFIED BY 'hellnoway@2025';
 GRANT ALL PRIVILEGES ON studentlink_prod.* TO 'studentlink_user'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
@@ -190,7 +190,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=studentlink_prod
 DB_USERNAME=studentlink_user
-DB_PASSWORD=your_secure_password
+DB_PASSWORD=hellnoway@2025
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=redis

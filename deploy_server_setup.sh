@@ -49,7 +49,7 @@ systemctl start mysql
 # Create MySQL database and user
 echo "👤 Creating MySQL database and user..."
 mysql -e "CREATE DATABASE IF NOT EXISTS studentlink_prod;"
-mysql -e "CREATE USER IF NOT EXISTS 'studentlink_user'@'localhost' IDENTIFIED BY 'StudentLink2024!';"
+mysql -e "CREATE USER IF NOT EXISTS 'studentlink_user'@'localhost' IDENTIFIED BY 'hellnoway@2025';"
 mysql -e "GRANT ALL PRIVILEGES ON studentlink_prod.* TO 'studentlink_user'@'localhost';"
 mysql -e "FLUSH PRIVILEGES;"
 
