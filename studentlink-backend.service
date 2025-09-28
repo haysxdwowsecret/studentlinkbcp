@@ -1,0 +1,15 @@
+[Unit]
+Description=StudentLink Backend (Laravel)
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/studentlink-prod/studentlink_backend
+ExecStart=/usr/bin/php artisan serve --host=0.0.0.0 --port=8000
+Restart=always
+RestartSec=10
+Environment=APP_ENV=production
+
+[Install]
+WantedBy=multi-user.target

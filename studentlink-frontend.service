@@ -1,0 +1,15 @@
+[Unit]
+Description=StudentLink Frontend (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/studentlink-prod/studentlink_web
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
