@@ -1,0 +1,67 @@
+// 🚀 SIZE OPTIMIZATION: Build variants for different app sizes
+
+android {
+    flavorDimensions "features"
+    
+    productFlavors {
+        // 🚀 MINIMAL: Core app without heavy features (~25MB)
+        minimal {
+            dimension "features"
+            applicationIdSuffix ".minimal"
+            versionNameSuffix "-minimal"
+            
+            // Remove heavy dependencies
+            buildConfigField "boolean", "ENABLE_ML_KIT", "false"
+            buildConfigField "boolean", "ENABLE_CAMERA", "false"
+            buildConfigField "boolean", "ENABLE_ACCESSIBILITY", "false"
+            
+            // Minimal ABI support
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+        }
+        
+        // 🚀 STANDARD: Standard app with core features (~45MB)
+        standard {
+            dimension "features"
+            applicationIdSuffix ".standard"
+            versionNameSuffix "-standard"
+            
+            // Core features only
+            buildConfigField "boolean", "ENABLE_ML_KIT", "false"
+            buildConfigField "boolean", "ENABLE_CAMERA", "true"
+            buildConfigField "boolean", "ENABLE_ACCESSIBILITY", "false"
+            
+            // Standard ABI support
+            ndk {
+                abiFilters 'arm64-v8a', 'armeabi-v7a'
+            }
+        }
+        
+        // 🚀 FULL: Full app with all features (~80MB)
+        full {
+            dimension "features"
+            applicationIdSuffix ".full"
+            versionNameSuffix "-full"
+            
+            // All features enabled
+            buildConfigField "boolean", "ENABLE_ML_KIT", "true"
+            buildConfigField "boolean", "ENABLE_CAMERA", "true"
+            buildConfigField "boolean", "ENABLE_ACCESSIBILITY", "true"
+            
+            // Full ABI support
+            ndk {
+                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+            }
+        }
+    }
+    
+    // 🚀 SIZE OPTIMIZATION: Variant-specific configurations
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        if (names.contains("minimal") && variant.buildType.name == "debug") {
+            // Skip debug builds for minimal variant
+            setIgnore(true)
+        }
+    }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pure white background -->
+    <item android:drawable="@android:color/white" />
+    
+    <!-- Centered app logo with proper scaling -->
+    <item android:gravity="center">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/launch_logo"
+            android:width="120dp"
+            android:height="120dp" />
+    </item>
+</layer-list>

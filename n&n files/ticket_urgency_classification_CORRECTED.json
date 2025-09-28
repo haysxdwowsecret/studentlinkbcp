@@ -1,0 +1,133 @@
+{
+  "name": "Ticket Urgency Classification (CORRECTED)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "CORRECTED AI-Powered Ticket Urgency Classification\nUses Hugging Face (100% FREE) + Cohere + Pinecone\nFixed backend URL to use localhost:8000",
+        "height": 530,
+        "width": 1100,
+        "color": 5
+      },
+      "id": "38027751-0f0a-4d20-a473-d97aff8830e6",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ticket-urgency-classification-corrected"
+      },
+      "id": "a6a7d7a0-659c-4dc7-b9ce-2ff29fde896a",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// CORRECTED FREE AI Classification Logic\nconst concernText = $input.first().json.body.description || '';\nconst subject = $input.first().json.body.subject || '';\nconst fullText = subject + ' ' + concernText;\n\n// Enhanced keyword-based classification (FREE alternative)\nconst urgentKeywords = ['urgent', 'emergency', 'critical', 'asap', 'immediately', 'broken', 'down', 'not working', 'error', 'crash', 'hack', 'security', 'breach'];\nconst highKeywords = ['important', 'deadline', 'due', 'priority', 'issue', 'problem', 'help', 'support', 'grade', 'exam', 'assignment'];\nconst mediumKeywords = ['question', 'inquiry', 'information', 'request', 'general', 'clarification'];\nconst lowKeywords = ['thanks', 'thank you', 'appreciation', 'feedback', 'suggestion'];\n\nlet urgencyLevel = 'low';\nlet confidenceScore = 0.6;\nlet reasoning = 'Classified based on keyword analysis';\nlet department = 'general';\n\nconst textLower = fullText.toLowerCase();\n\n// Check for urgent keywords\nif (urgentKeywords.some(keyword => textLower.includes(keyword))) {\n  urgencyLevel = 'critical';\n  confidenceScore = 0.9;\n  reasoning = 'Contains urgent keywords: ' + urgentKeywords.filter(k => textLower.includes(k)).join(', ');\n} else if (highKeywords.some(keyword => textLower.includes(keyword))) {\n  urgencyLevel = 'high';\n  confidenceScore = 0.8;\n  reasoning = 'Contains high-priority keywords: ' + highKeywords.filter(k => textLower.includes(k)).join(', ');\n} else if (mediumKeywords.some(keyword => textLower.includes(keyword))) {\n  urgencyLevel = 'medium';\n  confidenceScore = 0.7;\n  reasoning = 'Contains medium-priority keywords: ' + mediumKeywords.filter(k => textLower.includes(k)).join(', ');\n} else if (lowKeywords.some(keyword => textLower.includes(keyword))) {\n  urgencyLevel = 'low';\n  confidenceScore = 0.6;\n  reasoning = 'Contains low-priority keywords: ' + lowKeywords.filter(k => textLower.includes(k)).join(', ');\n}\n\n// Check text length (longer descriptions often indicate more complex issues)\nif (fullText.length > 200) {\n  if (urgencyLevel === 'low') {\n    urgencyLevel = 'medium';\n    confidenceScore = 0.7;\n    reasoning += '; Upgraded due to detailed description';\n  }\n}\n\n// Department classification based on keywords\nif (textLower.includes('grade') || textLower.includes('exam') || textLower.includes('assignment') || textLower.includes('course')) {\n  department = 'academic';\n} else if (textLower.includes('payment') || textLower.includes('fee') || textLower.includes('tuition') || textLower.includes('financial')) {\n  department = 'finance';\n} else if (textLower.includes('dorm') || textLower.includes('housing') || textLower.includes('room') || textLower.includes('accommodation')) {\n  department = 'housing';\n} else if (textLower.includes('library') || textLower.includes('book') || textLower.includes('research') || textLower.includes('study')) {\n  department = 'library';\n} else if (textLower.includes('tech') || textLower.includes('computer') || textLower.includes('system') || textLower.includes('login') || textLower.includes('password')) {\n  department = 'it';\n}\n\nreturn {\n  json: {\n    concern_id: $input.first().json.body.concern_id,\n    urgency_level: urgencyLevel,\n    confidence_score: confidenceScore,\n    reasoning: reasoning,\n    suggested_department: department,\n    ai_model: 'enhanced-keyword-classifier',\n    classified_at: new Date().toISOString(),\n    original_text: fullText.substring(0, 100) + '...'\n  }\n};"
+      },
+      "id": "classification-logic",
+      "name": "Enhanced Classification Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8000/api/n8n/concern-classification",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "concern_id",
+              "value": "={{ $json.concern_id }}"
+            },
+            {
+              "name": "urgency_level",
+              "value": "={{ $json.urgency_level }}"
+            },
+            {
+              "name": "confidence_score",
+              "value": "={{ $json.confidence_score }}"
+            },
+            {
+              "name": "reasoning",
+              "value": "={{ $json.reasoning }}"
+            },
+            {
+              "name": "suggested_department",
+              "value": "={{ $json.suggested_department }}"
+            },
+            {
+              "name": "ai_model",
+              "value": "={{ $json.ai_model }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-request-node",
+      "name": "Send to StudentLink",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Enhanced Classification Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enhanced Classification Logic": {
+      "main": [
+        [
+          {
+            "node": "Send to StudentLink",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

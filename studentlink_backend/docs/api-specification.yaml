@@ -1,0 +1,865 @@
+openapi: 3.0.3
+info:
+  title: StudentLink Backend API
+  description: |
+    Complete RESTful backend API for the StudentLink ecosystem at Bestlink College of the Philippines.
+    This API serves both the Flutter mobile application for students and the Next.js web portal for faculty, staff, department heads, and administrators.
+    
+    ## Features
+    - JWT-based authentication with role-based access control
+    - Comprehensive concern management with threaded conversations
+    - Announcement system with targeted notifications
+    - AI-powered chat assistant and suggestions
+    - Real-time notifications via Firebase Cloud Messaging
+    - Emergency help contacts and protocols
+    - Analytics and reporting system
+    
+    ## Authentication
+    All protected endpoints require a Bearer token in the Authorization header:
+    ```
+    Authorization: Bearer <jwt_token>
+    ```
+    
+  version: 1.0.0
+  contact:
+    name: StudentLink API Support
+    email: support@studentlink.edu.ph
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000/api
+    description: Development server
+  - url: https://api.studentlink.bestlink.edu.ph/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Concerns
+    description: Student concern management system
+  - name: Announcements
+    description: Campus announcements and notifications
+  - name: Users
+    description: User management and profiles
+  - name: Departments
+    description: Department management
+  - name: Emergency
+    description: Emergency contacts and protocols
+  - name: Notifications
+    description: Push notifications and alerts
+  - name: AI
+    description: AI-powered features and chatbot
+  - name: Analytics
+    description: System analytics and reporting
+  - name: System
+    description: System health and settings
+
+paths:
+  # Authentication Endpoints
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: student@bestlink.edu.ph
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+                      token_type:
+                        type: string
+                        example: bearer
+                      expires_in:
+                        type: integer
+                        example: 86400
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Get authenticated user information
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Invalidate JWT token and logout user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Successfully logged out
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh JWT token
+      description: Get a new JWT token using the current token
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      token_type:
+                        type: string
+                        example: bearer
+                      expires_in:
+                        type: integer
+                        example: 86400
+
+  # Concerns Endpoints
+  /concerns:
+    get:
+      tags:
+        - Concerns
+      summary: Get concerns list
+      description: Retrieve paginated list of concerns with filtering options
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by concern status
+          schema:
+            type: string
+            enum: [pending, in_progress, resolved, closed, cancelled]
+        - name: department_id
+          in: query
+          description: Filter by department ID
+          schema:
+            type: integer
+        - name: priority
+          in: query
+          description: Filter by priority level
+          schema:
+            type: string
+            enum: [low, medium, high, urgent]
+        - name: assigned_to
+          in: query
+          description: Filter by assigned user ID
+          schema:
+            type: integer
+        - name: type
+          in: query
+          description: Filter by concern type
+          schema:
+            type: string
+            enum: [academic, administrative, technical, health, safety, other]
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: Concerns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Concern'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags:
+        - Concerns
+      summary: Create new concern
+      description: Submit a new student concern
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subject
+                - description
+                - department_id
+                - type
+                - priority
+              properties:
+                subject:
+                  type: string
+                  maxLength: 255
+                  example: Late enrollment fee payment
+                description:
+                  type: string
+                  example: I would like to request an extension for my enrollment fee payment due to financial constraints.
+                department_id:
+                  type: integer
+                  example: 1
+                facility_id:
+                  type: integer
+                  nullable: true
+                  example: 1
+                type:
+                  type: string
+                  enum: [academic, administrative, technical, health, safety, other]
+                  example: administrative
+                priority:
+                  type: string
+                  enum: [low, medium, high, urgent]
+                  example: medium
+                is_anonymous:
+                  type: boolean
+                  default: false
+                  example: false
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                  example: []
+      responses:
+        '201':
+          description: Concern created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Concern submitted successfully
+                  data:
+                    $ref: '#/components/schemas/Concern'
+
+  /concerns/{id}:
+    get:
+      tags:
+        - Concerns
+      summary: Get concern details
+      description: Retrieve detailed information about a specific concern
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Concern ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Concern details retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ConcernDetailed'
+
+    put:
+      tags:
+        - Concerns
+      summary: Update concern
+      description: Update concern information (staff/faculty only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Concern ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject:
+                  type: string
+                  maxLength: 255
+                description:
+                  type: string
+                priority:
+                  type: string
+                  enum: [low, medium, high, urgent]
+                due_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+      responses:
+        '200':
+          description: Concern updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Concern updated successfully
+                  data:
+                    $ref: '#/components/schemas/Concern'
+
+  /concerns/{id}/status:
+    patch:
+      tags:
+        - Concerns
+      summary: Update concern status
+      description: Change the status of a concern (staff/faculty only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Concern ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [pending, in_progress, resolved, closed, cancelled]
+                  example: in_progress
+                note:
+                  type: string
+                  nullable: true
+                  example: Investigation started
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Status updated successfully
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Juan Dela Cruz
+        email:
+          type: string
+          format: email
+          example: juan.delacruz@bestlink.edu.ph
+        role:
+          type: string
+          enum: [student, faculty, staff, department_head, admin]
+          example: student
+        department:
+          type: string
+          example: BS Information Technology
+        department_id:
+          type: integer
+          example: 1
+        display_id:
+          type: string
+          example: 2021-00123
+        avatar:
+          type: string
+          nullable: true
+          example: /storage/avatars/user1.jpg
+        preferences:
+          type: object
+          nullable: true
+          example: {"notifications": true, "theme": "light"}
+        last_login_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2024-01-15T10:30:00Z
+        unread_notifications_count:
+          type: integer
+          example: 5
+
+    Concern:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        reference_number:
+          type: string
+          example: CNR-2024-001
+        subject:
+          type: string
+          example: Late enrollment fee payment
+        description:
+          type: string
+          example: I would like to request an extension for my enrollment fee payment.
+        type:
+          type: string
+          enum: [academic, administrative, technical, health, safety, other]
+          example: administrative
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+          example: medium
+        status:
+          type: string
+          enum: [pending, in_progress, resolved, closed, cancelled]
+          example: pending
+        is_anonymous:
+          type: boolean
+          example: false
+        student:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Juan Dela Cruz
+            display_id:
+              type: string
+              example: 2021-00123
+        department:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: BS Information Technology
+            code:
+              type: string
+              example: BSIT
+        facility:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Registrar Office
+        assigned_to:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: Maria Santos
+            role:
+              type: string
+              example: staff
+        attachments:
+          type: array
+          items:
+            type: string
+          example: ["/storage/attachments/document1.pdf"]
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2024-01-20T17:00:00Z
+        resolved_at:
+          type: string
+          format: date-time
+          nullable: true
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-01-15T10:30:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-01-15T14:30:00Z
+
+    ConcernDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Concern'
+        - type: object
+          properties:
+            messages:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConcernMessage'
+            history:
+              type: array
+              items:
+                $ref: '#/components/schemas/AuditLog'
+
+    ConcernMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        message:
+          type: string
+          example: Thank you for your concern. We are reviewing your request.
+        type:
+          type: string
+          enum: [message, status_change, assignment, system]
+          example: message
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: Maria Santos
+            role:
+              type: string
+              example: staff
+        attachments:
+          type: array
+          items:
+            type: string
+          example: []
+        is_internal:
+          type: boolean
+          example: false
+        is_ai_generated:
+          type: boolean
+          example: false
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-01-15T14:30:00Z
+
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Midterm Examination Schedule
+        content:
+          type: string
+          example: Please be advised that the midterm examinations will be held from March 15-22, 2024.
+        excerpt:
+          type: string
+          example: Midterm exams scheduled for March 15-22, 2024.
+        type:
+          type: string
+          enum: [general, academic, administrative, event, emergency]
+          example: academic
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+          example: medium
+        status:
+          type: string
+          enum: [draft, published, archived]
+          example: published
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: Maria Santos
+            role:
+              type: string
+              example: staff
+        target_departments:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3]
+        target_roles:
+          type: array
+          items:
+            type: string
+          example: ["student", "faculty"]
+        published_at:
+          type: string
+          format: date-time
+          example: 2024-01-15T09:00:00Z
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2024-03-30T23:59:59Z
+        featured_image:
+          type: string
+          nullable: true
+          example: /storage/announcements/midterm-schedule.jpg
+        view_count:
+          type: integer
+          example: 234
+        bookmark_count:
+          type: integer
+          example: 45
+        is_bookmarked:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-01-15T08:30:00Z
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: An error occurred
+        error:
+          type: string
+          nullable: true
+          example: Detailed error message
+        errors:
+          type: object
+          nullable: true
+          example: {"field": ["Field is required"]}
+
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        last_page:
+          type: integer
+          example: 10
+        per_page:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 200
+
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        action:
+          type: string
+          example: status_change
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            name:
+              type: string
+              example: Maria Santos
+        old_values:
+          type: object
+          nullable: true
+          example: {"status": "pending"}
+        new_values:
+          type: object
+          nullable: true
+          example: {"status": "in_progress"}
+        metadata:
+          type: object
+          nullable: true
+          example: {"ip_address": "192.168.1.1"}
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-01-15T14:30:00Z
+
+  responses:
+    Unauthorized:
+      description: Unauthorized access
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Unauthorized
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Forbidden - Insufficient permissions
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Resource not found
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            message: Validation failed
+            errors:
+              email: ["The email field is required."]
+              password: ["The password must be at least 6 characters."]
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

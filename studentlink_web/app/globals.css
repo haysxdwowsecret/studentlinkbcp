@@ -1,0 +1,275 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Inter+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color tokens to match Bestlink College branding */
+  --background: #ffffff;
+  --foreground: #1e2a78;
+  --card: #f9fafb;
+  --card-foreground: #374151;
+  --popover: #ffffff;
+  --popover-foreground: #1e2a78;
+  --primary: #1e2a78;
+  --primary-foreground: #ffffff;
+  --secondary: #2480ea;
+  --secondary-foreground: #ffffff;
+  --muted: #dfd10f;
+  --muted-foreground: #1e2a78;
+  --accent: #e22824;
+  --accent-foreground: #ffffff;
+  --destructive: #e22824;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #f9fafb;
+  --ring: rgba(0, 0, 0, 0.1);
+  --chart-1: #1e2a78;
+  --chart-2: #2480ea;
+  --chart-3: #e22824;
+  --chart-4: #dfd10f;
+  --chart-5: #f9fafb;
+  --radius: 0.5rem;
+  --sidebar: #f9fafb;
+  --sidebar-foreground: #1e2a78;
+  --sidebar-primary: #1e2a78;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2480ea;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Updated dark mode colors to maintain Bestlink branding */
+  --background: #0f172a;
+  --foreground: #ffffff;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --primary: #2480ea;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #f1f5f9;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --accent: #e22824;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: rgba(255, 255, 255, 0.1);
+  --chart-1: #2480ea;
+  --chart-2: #1e2a78;
+  --chart-3: #e22824;
+  --chart-4: #dfd10f;
+  --chart-5: #334155;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #2480ea;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: #334155;
+  --sidebar-ring: rgba(255, 255, 255, 0.1);
+}
+
+@theme inline {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter Display', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+  
+  /* Enhanced Institutional Color System */
+  --institutional-blue: #1E2A78;
+  --authority-blue: #0F1B5C;
+  --trust-blue: #2480EA;
+  --success-emerald: #059669;
+  --warning-amber: #D97706;
+  --neutral-slate: #475569;
+  --metric-highlight: #0EA5E9;
+  --content-overlay: rgba(30, 42, 120, 0.85);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Responsive login layout optimizations */
+@layer components {
+  .login-container {
+    min-height: 100vh;
+    display: flex;
+    width: 100%;
+  }
+  
+  .login-image-panel {
+    display: none;
+  }
+  
+  .login-form-panel {
+    width: 100%;
+    min-width: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  @media (min-width: 1024px) {
+    .login-image-panel {
+      display: flex;
+      width: 70%;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+    
+    .login-form-panel {
+      width: 30%;
+      min-width: 0;
+      flex-shrink: 0;
+      padding: 1rem;
+      height: 100vh;
+      overflow-y: auto;
+    }
+  }
+  
+  /* Ensure form doesn't get too cramped at any zoom level */
+  .login-form-content {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Image scaling to show full image without cropping */
+  .login-image {
+    object-fit: cover;
+    object-position: center center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Ensure the image panel maintains aspect ratio */
+  .login-image-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* Force consistent layout at all zoom levels */
+  @media (min-width: 1024px) {
+    .login-container {
+      flex-direction: row;
+    }
+    
+    .login-image-panel {
+      flex: 0 0 70%;
+    }
+    
+    .login-form-panel {
+      flex: 0 0 30%;
+    }
+  }
+}
+
+/* Institutional Design Components */
+.institutional-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.metrics-text {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--metric-highlight);
+}
+
+.professional-button {
+  background: linear-gradient(135deg, var(--institutional-blue) 0%, var(--trust-blue) 100%);
+  box-shadow: 0 10px 25px rgba(30, 42, 120, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.professional-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(30, 42, 120, 0.3);
+}
+
+.professional-button:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 20px rgba(30, 42, 120, 0.25);
+}
+
+.institutional-overlay {
+  background: linear-gradient(135deg, var(--content-overlay) 0%, rgba(15, 27, 92, 0.8) 100%);
+}
+
+.content-carousel {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.metric-counter {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--success-emerald);
+  text-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+}

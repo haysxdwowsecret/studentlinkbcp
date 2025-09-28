@@ -1,0 +1,50 @@
+name: studentlink
+description: A new Flutter project.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # MINIMAL CORE DEPENDENCIES ONLY
+  sizer: ^2.0.15
+  shared_preferences: ^2.2.2
+  
+  # ESSENTIAL UI
+  cached_network_image: ^3.3.1
+  dio: ^5.9.0
+  fluttertoast: ^8.2.4
+  
+  # FIREBASE CORE ONLY (no ML Kit)
+  firebase_core: ^3.15.2
+  firebase_messaging: ^15.2.10
+  
+  # BASIC FEATURES
+  path_provider: ^2.1.5
+  url_launcher: ^6.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  
+  # MINIMAL ASSETS
+  assets:
+    - assets/images/
+    - assets/icons/
+  
+  # NO FONTS - use system fonts only
+  # fonts:
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: assets/fonts/Roboto-Regular.ttf
+  #       - asset: assets/fonts/Roboto-Bold.ttf
+  #         weight: 700
+

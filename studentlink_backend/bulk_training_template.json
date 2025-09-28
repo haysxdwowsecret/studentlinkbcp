@@ -1,0 +1,97 @@
+{
+  "training_data": [
+    {
+      "type": "faq",
+      "question": "What are the new enrollment requirements for 2024?",
+      "answer": "For 2024 enrollment, you need: 1) Original Form 138 (Report Card), 2) PSA Birth Certificate, 3) 2x2 ID picture, 4) Certificate of Good Moral Character, 5) Medical Certificate, 6) Application form with P150 application fee (increased from P100).",
+      "context": "enrollment",
+      "priority": "high",
+      "tags": ["enrollment", "requirements", "2024", "fees"]
+    },
+    {
+      "type": "faq",
+      "question": "What is the new grading system?",
+      "answer": "Bestlink College now uses a 4.0 grading scale: 1.0 (Excellent), 1.25-1.75 (Very Good), 2.0-2.75 (Good), 3.0 (Passing), 5.0 (Failed). This system was implemented starting Academic Year 2024-2025.",
+      "context": "academic_support",
+      "priority": "high",
+      "tags": ["grading", "academic", "new_system", "2024"]
+    },
+    {
+      "type": "faq",
+      "question": "What are the new campus safety protocols?",
+      "answer": "New safety protocols include: 1) Mandatory ID scanning at all entrances, 2) Enhanced security patrols, 3) Emergency alert system via StudentLink app, 4) All students must complete safety orientation, 5) Visitor registration required.",
+      "context": "safety",
+      "priority": "high",
+      "tags": ["safety", "security", "protocols", "ID_scanning"]
+    },
+    {
+      "type": "faq",
+      "question": "How do I access the new online learning platform?",
+      "answer": "Access the new online learning platform through StudentLink app > Academic > Online Learning. Use your student credentials to log in. The platform includes video lectures, assignments, and real-time chat with instructors. Technical support is available 24/7.",
+      "context": "technical_support",
+      "priority": "medium",
+      "tags": ["online_learning", "platform", "access", "technical"]
+    },
+    {
+      "type": "faq",
+      "question": "What are the new library digital resources?",
+      "answer": "The library now offers access to over 50,000 digital books, academic journals, and research databases. Students can access these resources 24/7 through the StudentLink portal under 'Library Resources'. New features include AI-powered research assistance and citation tools.",
+      "context": "library",
+      "priority": "medium",
+      "tags": ["library", "digital_resources", "research", "AI_assistance"]
+    },
+    {
+      "type": "conversation",
+      "user_message": "I can't find my course schedule",
+      "assistant_response": "I can help you find your course schedule. Go to StudentLink app > Academic > My Schedule. If you don't see your schedule, contact the Registrar's Office as there might be an enrollment issue. You can also check the bulletin boards for any schedule changes.",
+      "context": "academic_support"
+    },
+    {
+      "type": "conversation",
+      "user_message": "I need help with my new student ID",
+      "assistant_response": "I can help you with your new student ID. Please visit the IT Department with a valid ID and proof of enrollment. The IT office is located in Room 205 and is open Monday to Friday, 8:00 AM to 5:00 PM. Bring your enrollment form and a 2x2 ID picture.",
+      "context": "it_support"
+    },
+    {
+      "type": "conversation",
+      "user_message": "The new online platform is not working",
+      "assistant_response": "I'm sorry to hear the new online platform is not working. Please try these troubleshooting steps: 1) Clear your browser cache, 2) Update the StudentLink app, 3) Check your internet connection, 4) Try using a different browser. If the issue persists, submit a technical concern through the app or contact IT support at it@bestlink.edu.ph.",
+      "context": "technical_support"
+    },
+    {
+      "type": "department_info",
+      "department": "registrar",
+      "topic": "new_enrollment_system",
+      "information": "The Registrar's Office has implemented a new online enrollment system. Students can now complete enrollment entirely online through the StudentLink portal. Physical visits are only required for document verification and ID card collection."
+    },
+    {
+      "type": "department_info",
+      "department": "it_department",
+      "topic": "new_security_features",
+      "information": "The IT Department has implemented new security features including two-factor authentication, biometric login, and enhanced password requirements. All students must update their passwords and enable 2FA by the end of the semester."
+    },
+    {
+      "type": "department_info",
+      "department": "library",
+      "topic": "AI_research_assistant",
+      "information": "The library now offers an AI-powered research assistant that can help students find relevant sources, generate citations, and provide research guidance. Access it through the Library Resources section in the StudentLink portal."
+    },
+    {
+      "type": "department_info",
+      "department": "academic_affairs",
+      "topic": "new_course_offerings",
+      "information": "Academic Affairs has introduced new course offerings including AI and Machine Learning, Digital Marketing, Cybersecurity, and Sustainable Business Practices. These courses are available for enrollment in the next semester."
+    }
+  ],
+  "metadata": {
+    "version": "2024.1",
+    "created_date": "2024-01-15",
+    "description": "Updated training data for StudentLink AI chatbot with new policies, systems, and features",
+    "total_items": 12,
+    "categories": {
+      "faq": 5,
+      "conversation": 3,
+      "department_info": 4
+    }
+  }
+}
